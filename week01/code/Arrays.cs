@@ -29,5 +29,10 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+        if (data == null || data.Count == 0 || amount <= 0 || amount > data.Count)
+            return; // Nothing to rotate
+        List<int> rotatePart = data.GetRange(data.Count - amount, amount); // Get the part to rotate
+        data.RemoveRange(data.Count - amount, amount); // Remove the part to rotate from the original list
+        data.InsertRange(0, rotatePart); // Insert the rotated part at the beginning of
     }
 }
