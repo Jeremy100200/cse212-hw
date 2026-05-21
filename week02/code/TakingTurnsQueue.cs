@@ -1,3 +1,8 @@
+using System;
+using System.Collections.Generic;
+
+
+
 /// <summary>
 /// This queue is circular.  When people are added via AddPerson, then they are added to the 
 /// back of the queue (per FIFO rules).  When GetNextPerson is called, the next person
@@ -7,12 +12,11 @@
 /// less than they will stay in the queue forever.  If a person is out of turns then they will 
 /// not be added back into the queue.
 /// </summary>
-public class TakingTurnsQueue
+public class TakingTurnsQueue 
 {
-    private readonly PersonQueue _people = new();
+    private readonly Queue<Person> _queue = new Queue<Person>();
 
-    public int Length => _people.Length;
-
+    public int Length => _queue.Count;
     /// <summary>
     /// Add new people to the queue with a name and number of turns
     /// </summary>
@@ -21,7 +25,7 @@ public class TakingTurnsQueue
     public void AddPerson(string name, int turns)
     {
         var person = new Person(name, turns);
-        _people.Enqueue(person);
+        _queue.Enqueue(person);
     }
 
     /// <summary>
@@ -33,25 +37,44 @@ public class TakingTurnsQueue
     /// </summary>
     public Person GetNextPerson()
     {
-        if (_people.IsEmpty())
+        if (_queue.Count == 0)
         {
             throw new InvalidOperationException("No one in the queue.");
         }
+
+        Person person = _queue.Dequeue();
+        //infinite turns: 0 or negative always re enqueue without changing turns
+        if (person.Turns <= 0)
+        {
+            _queue.Enqueue(person);
+        }
+        //use up a turn and re enqueue if they have turns left
         else
         {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
+            person.Turns--;
+            if (person.Turns > 0)
             {
-                person.Turns -= 1;
-                _people.Enqueue(person);
+                _queue.Enqueue(person);
             }
-
-            return person;
+            // else they are out of turns and should not be re-enqueued
         }
+        return person;
     }
-
-    public override string ToString()
+    //Person class is here for testing purposes.  It is not part of the requirements for the TakingTurnsQueue class and should not be used in the implementation of the TakingTurnsQueue class.  It is only used in the tests to verify that the turns parameter is being updated correctly and that people with infinite turns are not having their turns parameter modified to a very big number.
+    public class Person
     {
-        return _people.ToString();
+        public string Name { get; }
+        public int Turns { get; set; }
+
+        public Person(string name, int turns)
+        {
+            Name = name;
+            Turns = turns;
+        }
+
+        public override string ToString()
+        {
+            return $"{Name} ({Turns} turns)";
+        }
     }
 }
