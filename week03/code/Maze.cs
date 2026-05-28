@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;   
+
 /// <summary>
 /// Defines a maze using a dictionary. The dictionary is provided by the
 /// user when the Maze object is created. The dictionary will contain the
@@ -33,6 +36,13 @@ public class Maze
     public void MoveLeft()
     {
         // FILL IN CODE
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var directions))
+            throw new InvalidOperationException("Can't go that way!");
+
+        if (!directions[0]) // index 0 = left
+            throw new InvalidOperationException("Can't go that way!");
+
+        _currX--;
     }
 
     /// <summary>
@@ -42,6 +52,12 @@ public class Maze
     public void MoveRight()
     {
         // FILL IN CODE
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var directions))
+            throw new InvalidOperationException("Can't go that way!");
+
+        if (!directions[1]) // index 1 = right
+            throw new InvalidOperationException("Can't go that way!");
+        _currX++;
     }
 
     /// <summary>
@@ -51,6 +67,13 @@ public class Maze
     public void MoveUp()
     {
         // FILL IN CODE
+       if (!_mazeMap.TryGetValue((_currX, _currY), out var directions))
+        throw new InvalidOperationException("Can't go that way!");
+
+    if (!directions[2]) // up
+        throw new InvalidOperationException("Can't go that way!");
+
+    _currY--; // up decreases Y
     }
 
     /// <summary>
@@ -60,6 +83,13 @@ public class Maze
     public void MoveDown()
     {
         // FILL IN CODE
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var directions))
+        throw new InvalidOperationException("Can't go that way!");
+
+    if (!directions[3]) // down
+        throw new InvalidOperationException("Can't go that way!");
+
+    _currY++; // down increases Y
     }
 
     public string GetStatus()
